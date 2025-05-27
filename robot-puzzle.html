@@ -1,0 +1,96 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Robot Path Puzzle</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background-color: #f0f8ff;
+      text-align: center;
+    }
+    #game {
+      position: relative;
+      margin: 20px auto;
+      width: 800px;
+      height: 600px;
+      background: url('robot-puzzle-background.png') no-repeat center center;
+      background-size: contain;
+    }
+    .arrow {
+      width: 60px;
+      height: 60px;
+      border: 2px solid #333;
+      margin: 10px;
+      cursor: grab;
+      font-size: 2rem;
+    }
+    .slot {
+      display: inline-block;
+      width: 60px;
+      height: 60px;
+      border: 2px dashed #aaa;
+      margin: 10px;
+      vertical-align: top;
+    }
+    #message {
+      margin-top: 20px;
+      font-size: 1.2rem;
+      color: green;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Help Robo-Buddy Find the Treasure!</h1>
+  <p>Drag the arrows in the correct order to guide the robot.</p>
+
+  <div id="game"></div>
+
+  <div>
+    <div class="arrow" draggable="true" data-dir="→">→</div>
+    <div class="arrow" draggable="true" data-dir="↓">↓</div>
+    <div class="arrow" draggable="true" data-dir="→">→</div>
+  </div>
+
+  <div>
+    <div class="slot"></div>
+    <div class="slot"></div>
+    <div class="slot"></div>
+  </div>
+
+  <button onclick="checkAnswer()">Run Code</button>
+  <div id="message"></div>
+
+  <script>
+    const arrows = document.querySelectorAll('.arrow');
+    const slots = document.querySelectorAll('.slot');
+
+    arrows.forEach(arrow => {
+      arrow.addEventListener('dragstart', e => {
+        e.dataTransfer.setData('text/plain', arrow.dataset.dir);
+      });
+    });
+
+    slots.forEach(slot => {
+      slot.addEventListener('dragover', e => e.preventDefault());
+      slot.addEventListener('drop', e => {
+        const dir = e.dataTransfer.getData('text/plain');
+        slot.textContent = dir;
+        slot.dataset.dir = dir;
+      });
+    });
+
+    function checkAnswer() {
+      const correct = ['→', '→', '↓'];
+      const player = Array.from(slots).map(s => s.dataset.dir);
+      if (JSON.stringify(correct) === JSON.stringify(player)) {
+        document.getElementById('message').textContent = 'Well done! Secret letter: A';
+      } else {
+        document.getElementById('message').textContent = 'Oops! Try again!';
+      }
+    }
+  </script>
+</body>
+</html>
